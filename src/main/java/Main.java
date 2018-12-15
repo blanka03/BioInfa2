@@ -34,11 +34,18 @@ public class Main {
 
             GapPenalty gapP = new SimpleGapPenalty(1,0);  // z tym coś bez sensu :/
 
-            SequencePair<DNASequence, NucleotideCompound> psa =
+            SequencePair<DNASequence, NucleotideCompound> psaLocal =
                     Alignments.getPairwiseAlignment(first, second,
                             Alignments.PairwiseSequenceAlignerType.LOCAL, gapP,  matrix);
+            System.out.println(psaLocal);
 
-            System.out.println(psa);
+            // global alligment
+            SequencePair<DNASequence, NucleotideCompound> psaGlobal =
+                    Alignments.getPairwiseAlignment(first, second,
+                            Alignments.PairwiseSequenceAlignerType.GLOBAL, gapP,  matrix);
+            System.out.println("");
+            System.out.println("");
+            System.out.println(psaGlobal);
         } catch (CompoundNotFoundException e) {
             e.printStackTrace();
         }
