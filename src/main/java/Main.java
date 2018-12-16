@@ -1,24 +1,23 @@
-import org.biojava.nbio.alignment.Alignments;
-import org.biojava.nbio.alignment.SimpleGapPenalty;
-import org.biojava.nbio.alignment.template.GapPenalty;
-import org.biojava.nbio.core.alignment.matrices.SubstitutionMatrixHelper;
-import org.biojava.nbio.core.alignment.template.SequencePair;
-import org.biojava.nbio.core.alignment.template.SubstitutionMatrix;
-import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
-import org.biojava.nbio.core.sequence.DNASequence;
-import org.biojava.nbio.core.sequence.compound.AmbiguityDNACompoundSet;
-import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
+import org.biojava.bio.BioException;
+import org.biojava.bio.alignment.AlignmentPair;
+import org.biojava.bio.alignment.NeedlemanWunsch;
+import org.biojava.bio.alignment.SubstitutionMatrix;
+import org.biojava.bio.seq.DNATools;
+import org.biojava.bio.seq.Sequence;
+import org.biojava.bio.symbol.AlphabetManager;
+import org.biojava.bio.symbol.FiniteAlphabet;
+import org.biojava.bio.symbol.IllegalSymbolException;
 
 public class Main {
 
     public static void main(String[] args) {
         try {
-            DNASequence first = new DNASequence("CACGTTTCTTGTGGCAGCTTAAGTTTGAATGTCATTTCTTCAATGGGACGGA"+
+            Sequence first = DNATools.createDNASequence("CACGTTTCTTGTGGCAGCTTAAGTTTGAATGTCATTTCTTCAATGGGACGGA"+
                                     "GCGGGTGCGGTTGCTGGAAAGATGCATCTATAACCAAGAGGAGTCCGTGCGCTTCGACAGC"+
                                 "GACGTGGGGGAGTACCGGGCGGTGACGGAGCTGGGGCGGCCTGATGCCGAGTACTGGAACA"+
                                 "GCCAGAAGGACCTCCTGGAGCAGAGGCGGGCCGCGGTGGACACCTACTGCAGACACAACTA"+
-                                "CGGGGTTGGTGAGAGCTTCACAGTGCAGCGGCGAG", AmbiguityDNACompoundSet.getDNACompoundSet());
-            DNASequence second = new DNASequence("ACGAGTGCGTGTTTTCCCGCCTGGTCCCCAGGCCCCCTTTCCGTCCTCAGGAA"+
+                                "CGGGGTTGGTGAGAGCTTCACAGTGCAGCGGCGAG", "query");
+            Sequence second = DNATools.createDNASequence("ACGAGTGCGTGTTTTCCCGCCTGGTCCCCAGGCCCCCTTTCCGTCCTCAGGAA"+
                                  "GACAGAGGAGGAGCCCCTCGGGCTGCAGGTGGTGGGCGTTGCGGCGGCGGCCGGTTAAGGT"+
                                  "TCCCAGTGCCCGCACCCGGCCCACGGGAGCCCCGGACTGGCGGCGTCACTGTCAGTGTCTT"+
                                  "CTCAGGAGGCCGCCTGTGTGACTGGATCGTTCGTGTCCCCACAGCACGTTTCTTGGAGTAC"+
@@ -26,15 +25,29 @@ public class Main {
                                  "TCCATAACCAGGAGGAGAACGTGCGCTTCGACAGCGACGTGGGGGAGTTCCGGGCGGTGAC"+
                                  "GGAGCTGGGGCGGCCTGATGCCGAGTACTGGAACAGCCAGAAGGACATCCTGGAAGACGAG"+
                                  "CGGGCCGCGGTGGACACCTACTGCAGACACAACTACGGGGTTGTGAGAGCTTCACCGTGCA"+
-                                 "GCGGCGAGACGCACTCGT", AmbiguityDNACompoundSet.getDNACompoundSet());
+                                 "GCGGCGAGACGCACTCGT", "target");
             //System.out.println(first);
+            FiniteAlphabet alphabet = (FiniteAlphabet) AlphabetManager.alphabetForName("DNA");
 
             // local alligment
-            SubstitutionMatrix<NucleotideCompound> matrix = SubstitutionMatrixHelper.getNuc4_4();
+            SubstitutionMatrix matrix = SubstitutionMatrix.getNuc4_2();
 
-            GapPenalty gapP = new SimpleGapPenalty(1,0);  // z tym coś bez sensu :/
+            NeedlemanWunsch aligner = new NeedlemanWunsch(
+                    (short) 0,  // match
+                    (short) 3,  // replace
+                    (short) 2,      // insert
+                    (short) 2,  // delete
+                    (short) 1,      // gapExtend
+                    matrix  // SubstitutionMatrix
+            );
+            AlignmentPair ap = aligner.pairwiseAlignment(
+                    first, // first sequence
+                    second // second one
+            );
 
-            SequencePair<DNASequence, NucleotideCompound> psaLocal =
+            System.out.println("Global alignment with Needleman-Wunsch:\n" + ap.formatOutput()  + "\n Edit distance " + aligner.getEditDistance());
+
+            /*SequencePair<DNASequence, NucleotideCompound> psaLocal =
                     Alignments.getPairwiseAlignment(first, second,
                             Alignments.PairwiseSequenceAlignerType.LOCAL, gapP,  matrix);
             System.out.println("Local alignment with SmithWaterman:\n" + psaLocal);
@@ -43,10 +56,15 @@ public class Main {
             SequencePair<DNASequence, NucleotideCompound> psaGlobal =
                     Alignments.getPairwiseAlignment(first, second,
                             Alignments.PairwiseSequenceAlignerType.GLOBAL, gapP,  matrix);
+
+            NeedlemanWunsch
+
             System.out.println("");
             System.out.println("");
-            System.out.println("Global alignment with Needleman-Wunsch:\n" + psaGlobal);
-        } catch (CompoundNotFoundException e) {
+            System.out.println("Global alignment with Needleman-Wunsch:\n" + psaGlobal);*/
+        } catch (IllegalSymbolException e) {
+            e.printStackTrace();
+        } catch (BioException e) {
             e.printStackTrace();
         }
     }
