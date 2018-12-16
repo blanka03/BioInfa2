@@ -37,7 +37,7 @@ public class Main {
             SequencePair<DNASequence, NucleotideCompound> psaLocal =
                     Alignments.getPairwiseAlignment(first, second,
                             Alignments.PairwiseSequenceAlignerType.LOCAL, gapP,  matrix);
-            System.out.println(psaLocal);
+            System.out.println("Local alignment with SmithWaterman:\n" + psaLocal);
 
             // global alligment
             SequencePair<DNASequence, NucleotideCompound> psaGlobal =
@@ -45,7 +45,7 @@ public class Main {
                             Alignments.PairwiseSequenceAlignerType.GLOBAL, gapP,  matrix);
             System.out.println("");
             System.out.println("");
-            System.out.println(psaGlobal);
+            System.out.println("Global alignment with Needleman-Wunsch:\n" + psaGlobal);
         } catch (CompoundNotFoundException e) {
             e.printStackTrace();
         }
