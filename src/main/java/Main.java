@@ -1,6 +1,7 @@
 import org.biojava.bio.BioException;
 import org.biojava.bio.alignment.AlignmentPair;
 import org.biojava.bio.alignment.NeedlemanWunsch;
+import org.biojava.bio.alignment.SmithWaterman;
 import org.biojava.bio.alignment.SubstitutionMatrix;
 import org.biojava.bio.seq.DNATools;
 import org.biojava.bio.seq.Sequence;
@@ -12,25 +13,13 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            Sequence first = DNATools.createDNASequence("CACGTTTCTTGTGGCAGCTTAAGTTTGAATGTCATTTCTTCAATGGGACGGA"+
-                                    "GCGGGTGCGGTTGCTGGAAAGATGCATCTATAACCAAGAGGAGTCCGTGCGCTTCGACAGC"+
-                                "GACGTGGGGGAGTACCGGGCGGTGACGGAGCTGGGGCGGCCTGATGCCGAGTACTGGAACA"+
-                                "GCCAGAAGGACCTCCTGGAGCAGAGGCGGGCCGCGGTGGACACCTACTGCAGACACAACTA"+
-                                "CGGGGTTGGTGAGAGCTTCACAGTGCAGCGGCGAG", "query");
-            Sequence second = DNATools.createDNASequence("ACGAGTGCGTGTTTTCCCGCCTGGTCCCCAGGCCCCCTTTCCGTCCTCAGGAA"+
-                                 "GACAGAGGAGGAGCCCCTCGGGCTGCAGGTGGTGGGCGTTGCGGCGGCGGCCGGTTAAGGT"+
-                                 "TCCCAGTGCCCGCACCCGGCCCACGGGAGCCCCGGACTGGCGGCGTCACTGTCAGTGTCTT"+
-                                 "CTCAGGAGGCCGCCTGTGTGACTGGATCGTTCGTGTCCCCACAGCACGTTTCTTGGAGTAC"+
-                                 "TCTACGTCTGAGTGTCATTTCTTCAATGGGACGGAGCGGGTGCGGTTCCTGGACAGATACT"+
-                                 "TCCATAACCAGGAGGAGAACGTGCGCTTCGACAGCGACGTGGGGGAGTTCCGGGCGGTGAC"+
-                                 "GGAGCTGGGGCGGCCTGATGCCGAGTACTGGAACAGCCAGAAGGACATCCTGGAAGACGAG"+
-                                 "CGGGCCGCGGTGGACACCTACTGCAGACACAACTACGGGGTTGTGAGAGCTTCACCGTGCA"+
-                                 "GCGGCGAGACGCACTCGT", "target");
+            Sequence first = DNATools.createDNASequence("ACGGTTTCGTTTTCCCGCCTAATCCCAGGCCCCC", "query");
+            Sequence second = DNATools.createDNASequence("ACGAGTGCGTGTTTTCCCGCCTGGTCCCCAGGCCCCCTTTCC", "target");
             //System.out.println(first);
             FiniteAlphabet alphabet = (FiniteAlphabet) AlphabetManager.alphabetForName("DNA");
 
             // local alligment
-            SubstitutionMatrix matrix = SubstitutionMatrix.getNuc4_2();
+            SubstitutionMatrix matrix = SubstitutionMatrix.getNuc4_4();
 
             NeedlemanWunsch aligner = new NeedlemanWunsch(
                     (short) 0,  // match
@@ -47,21 +36,25 @@ public class Main {
 
             System.out.println("Global alignment with Needleman-Wunsch:\n" + ap.formatOutput()  + "\n Edit distance " + aligner.getEditDistance());
 
-            /*SequencePair<DNASequence, NucleotideCompound> psaLocal =
-                    Alignments.getPairwiseAlignment(first, second,
-                            Alignments.PairwiseSequenceAlignerType.LOCAL, gapP,  matrix);
-            System.out.println("Local alignment with SmithWaterman:\n" + psaLocal);
+            SmithWaterman aligner2 = new SmithWaterman(
+                    (short) 0,  // match
+                    (short) 3,  // replace
+                    (short) 2,      // insert
+                    (short) 2,  // delete
+                    (short) 1,      // gapExtend
+                    matrix  // SubstitutionMatrix
+            );
 
-            // global alligment
-            SequencePair<DNASequence, NucleotideCompound> psaGlobal =
-                    Alignments.getPairwiseAlignment(first, second,
-                            Alignments.PairwiseSequenceAlignerType.GLOBAL, gapP,  matrix);
+            AlignmentPair ap2 = aligner2.pairwiseAlignment(
+                    first, // first sequence
+                    second // second one
+            );
 
-            NeedlemanWunsch
 
-            System.out.println("");
-            System.out.println("");
-            System.out.println("Global alignment with Needleman-Wunsch:\n" + psaGlobal);*/
+            System.out.println("\n \n Local alignment with SmithWaterman:\n" + ap2.formatOutput());
+
+
+
         } catch (IllegalSymbolException e) {
             e.printStackTrace();
         } catch (BioException e) {
