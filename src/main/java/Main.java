@@ -1,53 +1,30 @@
-import org.biojava.nbio.alignment.Alignments;
-import org.biojava.nbio.alignment.SimpleGapPenalty;
-import org.biojava.nbio.alignment.template.GapPenalty;
-import org.biojava.nbio.core.alignment.matrices.SubstitutionMatrixHelper;
-import org.biojava.nbio.core.alignment.template.SequencePair;
-import org.biojava.nbio.core.alignment.template.SubstitutionMatrix;
-import org.biojava.nbio.core.exceptions.CompoundNotFoundException;
-import org.biojava.nbio.core.sequence.DNASequence;
-import org.biojava.nbio.core.sequence.compound.AmbiguityDNACompoundSet;
-import org.biojava.nbio.core.sequence.compound.NucleotideCompound;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class Main {
+import java.io.IOException;
+
+public class Main extends Application {
 
     public static void main(String[] args) {
+        launch(args);
+    }
+    @Override
+    public void start(Stage primaryStage) {
         try {
-            DNASequence first = new DNASequence("CACGTTTCTTGTGGCAGCTTAAGTTTGAATGTCATTTCTTCAATGGGACGGA"+
-                                    "GCGGGTGCGGTTGCTGGAAAGATGCATCTATAACCAAGAGGAGTCCGTGCGCTTCGACAGC"+
-                                "GACGTGGGGGAGTACCGGGCGGTGACGGAGCTGGGGCGGCCTGATGCCGAGTACTGGAACA"+
-                                "GCCAGAAGGACCTCCTGGAGCAGAGGCGGGCCGCGGTGGACACCTACTGCAGACACAACTA"+
-                                "CGGGGTTGGTGAGAGCTTCACAGTGCAGCGGCGAG", AmbiguityDNACompoundSet.getDNACompoundSet());
-            DNASequence second = new DNASequence("ACGAGTGCGTGTTTTCCCGCCTGGTCCCCAGGCCCCCTTTCCGTCCTCAGGAA"+
-                                 "GACAGAGGAGGAGCCCCTCGGGCTGCAGGTGGTGGGCGTTGCGGCGGCGGCCGGTTAAGGT"+
-                                 "TCCCAGTGCCCGCACCCGGCCCACGGGAGCCCCGGACTGGCGGCGTCACTGTCAGTGTCTT"+
-                                 "CTCAGGAGGCCGCCTGTGTGACTGGATCGTTCGTGTCCCCACAGCACGTTTCTTGGAGTAC"+
-                                 "TCTACGTCTGAGTGTCATTTCTTCAATGGGACGGAGCGGGTGCGGTTCCTGGACAGATACT"+
-                                 "TCCATAACCAGGAGGAGAACGTGCGCTTCGACAGCGACGTGGGGGAGTTCCGGGCGGTGAC"+
-                                 "GGAGCTGGGGCGGCCTGATGCCGAGTACTGGAACAGCCAGAAGGACATCCTGGAAGACGAG"+
-                                 "CGGGCCGCGGTGGACACCTACTGCAGACACAACTACGGGGTTGTGAGAGCTTCACCGTGCA"+
-                                 "GCGGCGAGACGCACTCGT", AmbiguityDNACompoundSet.getDNACompoundSet());
-            //System.out.println(first);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("bioinfa.fxml"));
+            Parent root = loader.load();
 
-            // local alligment
-            SubstitutionMatrix<NucleotideCompound> matrix = SubstitutionMatrixHelper.getNuc4_4();
+            FxmlController controller = loader.getController();
+            controller.setStageAndSetupListeners(primaryStage);
+            primaryStage.setScene(new Scene(root));
+            primaryStage.show();
 
-            GapPenalty gapP = new SimpleGapPenalty(1,0);  // z tym coś bez sensu :/
-
-            SequencePair<DNASequence, NucleotideCompound> psaLocal =
-                    Alignments.getPairwiseAlignment(first, second,
-                            Alignments.PairwiseSequenceAlignerType.LOCAL, gapP,  matrix);
-            System.out.println("Local alignment with SmithWaterman:\n" + psaLocal);
-
-            // global alligment
-            SequencePair<DNASequence, NucleotideCompound> psaGlobal =
-                    Alignments.getPairwiseAlignment(first, second,
-                            Alignments.PairwiseSequenceAlignerType.GLOBAL, gapP,  matrix);
-            System.out.println("");
-            System.out.println("");
-            System.out.println("Global alignment with Needleman-Wunsch:\n" + psaGlobal);
-        } catch (CompoundNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }

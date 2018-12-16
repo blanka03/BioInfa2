@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane disable="false" prefHeight="743.9998779296875" prefWidth="806.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="FxmlController">
+  <children>
+    <TextField fx:id="seq1FileId" disable="true" layoutX="98.0" layoutY="26.0" prefWidth="408.0" />
+    <Text layoutX="38.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Query:" />
+    <Text layoutX="38.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Target:" />
+    <TextField fx:id="seq2FileId" disable="true" layoutX="98.0" layoutY="72.0" prefWidth="408.0" />
+    <Button id="fileButton1" layoutX="533.0" layoutY="25.0" mnemonicParsing="false" onMouseClicked="#QueryFile" text="Choose File" />
+    <Button id="fileButton2" layoutX="533.0" layoutY="71.0" mnemonicParsing="false" onMouseClicked="#TargetFile" text="Choose File" />
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dfdfdf" height="267.0" layoutX="38.0" layoutY="130.0" stroke="BLACK" strokeType="INSIDE" width="260.0" />
+    <Text layoutX="54.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Properties:" />
+    <Text layoutX="54.0" layoutY="184.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Match:" />
+    <Text layoutX="54.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Replace:" />
+    <Text layoutX="54.0" layoutY="252.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Insert:" />
+    <Text layoutX="54.0" layoutY="287.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delete:" />
+    <Text layoutX="54.0" layoutY="323.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gap extend:" />
+    <TextField fx:id="matchId" alignment="BASELINE_CENTER" layoutX="147.0" layoutY="168.0" prefWidth="54.92431640625" text="0" />
+    <TextField fx:id="replaceId" alignment="BASELINE_CENTER" layoutX="147.0" layoutY="200.0" prefWidth="54.92431640625" text="0" />
+    <TextField fx:id="insertId" alignment="BASELINE_CENTER" layoutX="147.0" layoutY="233.0" prefWidth="54.92431640625" text="0" />
+    <TextField fx:id="deleteId" alignment="BASELINE_CENTER" layoutX="147.0" layoutY="268.0" prefWidth="54.92431640625" text="0" />
+    <TextField fx:id="gapExtId" alignment="BASELINE_CENTER" layoutX="147.0" layoutY="307.0" prefWidth="54.92431640625" text="0" />
+    <CheckBox fx:id="globalId" layoutX="50.0" layoutY="352.0" mnemonicParsing="false" prefWidth="83.07958984375" text="GLOBAL" />
+    <CheckBox fx:id="localId" layoutX="180.0" layoutY="352.0" mnemonicParsing="false" text="LOCAL" />
+    <TableView fx:id="tableId" layoutX="441.0" layoutY="149.0" prefHeight="229.0" prefWidth="266.0">
+      <columns>
+        <TableColumn prefWidth="75.0" text="Column X" />
+        <TableColumn prefWidth="75.0" text="Column X" />
+      </columns>
+    </TableView>
+    <TextArea fx:id="textArea" disable="false" editable="false" layoutX="38.0" layoutY="465.0" prefHeight="243.0" prefWidth="710.0" wrapText="true" />
+    <Button fx:id="processButton" layoutX="332.0" layoutY="413.0" mnemonicParsing="false" onMouseClicked="#startProcess" text="Start" />
+    <Button layoutX="471.0" layoutY="413.0" mnemonicParsing="false" onMouseClicked="#clear" text="Clear" />
+  </children>
+</AnchorPane>
