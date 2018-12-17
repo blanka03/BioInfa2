@@ -5,7 +5,12 @@ import org.biojava.bio.alignment.SmithWaterman;
 import org.biojava.bio.alignment.SubstitutionMatrix;
 import org.biojava.bio.seq.DNATools;
 import org.biojava.bio.seq.Sequence;
+import org.biojava.bio.symbol.Alphabet;
+import org.biojava.bio.symbol.AlphabetManager;
+import org.biojava.bio.symbol.FiniteAlphabet;
 import org.biojava.bio.symbol.IllegalSymbolException;
+
+import java.io.IOException;
 
 public class DnaProcessor {
     private short matchPenalty;
@@ -28,12 +33,22 @@ public class DnaProcessor {
         this.gapExtendPenalty = dnaProcessorBuilder.gapExtendPenalty;
     }
 
-    String process(boolean local, boolean global) {
+    String process(boolean local, boolean global, boolean customMatrix, String costMatrix) {
         String response = "";
         try {
             Sequence query = DNATools.createDNASequence(sequenceQuery, "query");
             Sequence target = DNATools.createDNASequence(sequenceTarget, "target");
-            SubstitutionMatrix matrix = SubstitutionMatrix.getNuc4_4();
+            SubstitutionMatrix matrix ;
+            if(!customMatrix){
+                matrix =  SubstitutionMatrix.getNuc4_4();
+            }
+            else {
+                try {
+                    matrix = new SubstitutionMatrix((FiniteAlphabet) AlphabetManager.alphabetForName("DNA"), costMatrix, "macierz kosztu");
+                } catch (IOException e) {
+                    matrix =  SubstitutionMatrix.getNuc4_4();
+                }
+            }
            if(global) {
                NeedlemanWunsch aligner = new NeedlemanWunsch(matchPenalty, replacePenalty,
                        insertPenalty, deletePenalty, gapExtendPenalty, matrix);
