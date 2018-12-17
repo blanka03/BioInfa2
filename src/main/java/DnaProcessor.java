@@ -43,11 +43,7 @@ public class DnaProcessor {
                 matrix =  SubstitutionMatrix.getNuc4_4();
             }
             else {
-                try {
                     matrix = new SubstitutionMatrix((FiniteAlphabet) AlphabetManager.alphabetForName("DNA"), costMatrix, "macierz kosztu");
-                } catch (IOException e) {
-                    matrix =  SubstitutionMatrix.getNuc4_4();
-                }
             }
            if(global) {
                NeedlemanWunsch aligner = new NeedlemanWunsch(matchPenalty, replacePenalty,
@@ -71,8 +67,10 @@ public class DnaProcessor {
         } catch (BioException e) {
             e.printStackTrace();
             return "";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
         }
-
     }
 
 
