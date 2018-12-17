@@ -5,7 +5,6 @@ import org.biojava.bio.alignment.SmithWaterman;
 import org.biojava.bio.alignment.SubstitutionMatrix;
 import org.biojava.bio.seq.DNATools;
 import org.biojava.bio.seq.Sequence;
-import org.biojava.bio.symbol.Alphabet;
 import org.biojava.bio.symbol.AlphabetManager;
 import org.biojava.bio.symbol.FiniteAlphabet;
 import org.biojava.bio.symbol.IllegalSymbolException;
@@ -38,28 +37,28 @@ public class DnaProcessor {
         try {
             Sequence query = DNATools.createDNASequence(sequenceQuery, "query");
             Sequence target = DNATools.createDNASequence(sequenceTarget, "target");
-            SubstitutionMatrix matrix ;
-            if(!customMatrix){
-                matrix =  SubstitutionMatrix.getNuc4_4();
+            SubstitutionMatrix matrix;
+            if (!customMatrix) {
+                matrix = SubstitutionMatrix.getNuc4_4();
+            } else {
+                matrix = new SubstitutionMatrix((FiniteAlphabet) AlphabetManager.alphabetForName("DNA"), costMatrix, "macierz kosztu");
             }
-            else {
-                    matrix = new SubstitutionMatrix((FiniteAlphabet) AlphabetManager.alphabetForName("DNA"), costMatrix, "macierz kosztu");
+            
+            if (global) {
+                NeedlemanWunsch aligner = new NeedlemanWunsch(matchPenalty, replacePenalty,
+                        insertPenalty, deletePenalty, gapExtendPenalty, matrix);
+                AlignmentPair ap = aligner.pairwiseAlignment(query, target);
+
+                response += "Global alignment with Needleman-Wunsch:\n" + ap.formatOutput() + "\n Edit distance " + aligner.getEditDistance();
             }
-           if(global) {
-               NeedlemanWunsch aligner = new NeedlemanWunsch(matchPenalty, replacePenalty,
-                       insertPenalty, deletePenalty, gapExtendPenalty, matrix);
-               AlignmentPair ap = aligner.pairwiseAlignment(query, target);
+            if (local) {
+                SmithWaterman aligner2 = new SmithWaterman(matchPenalty, replacePenalty,
+                        insertPenalty, deletePenalty, gapExtendPenalty, matrix);
 
-               response +="Global alignment with Needleman-Wunsch:\n" + ap.formatOutput() + "\n Edit distance " + aligner.getEditDistance();
-           }
-           if(local) {
-               SmithWaterman aligner2 = new SmithWaterman(matchPenalty, replacePenalty,
-                       insertPenalty, deletePenalty, gapExtendPenalty, matrix);
+                AlignmentPair ap2 = aligner2.pairwiseAlignment(query, target);
 
-               AlignmentPair ap2 = aligner2.pairwiseAlignment(query, target);
-
-               response +="\n Local alignment with SmithWaterman:\n" + ap2.formatOutput();
-           }
+                response += "\n Local alignment with SmithWaterman:\n" + ap2.formatOutput();
+            }
             return response;
         } catch (IllegalSymbolException e) {
             e.printStackTrace();
@@ -85,7 +84,7 @@ public class DnaProcessor {
         private String sequenceQuery;
         private String sequenceTarget;
 
-        public DnaProcessorBuilder (String seq1, String seq2) {
+        public DnaProcessorBuilder(String seq1, String seq2) {
             this.sequenceQuery = seq1;
             this.sequenceTarget = seq2;
         }
@@ -99,6 +98,7 @@ public class DnaProcessor {
             this.replacePenalty = (short) Integer.parseInt(replace);
             return this;
         }
+
         public DnaProcessorBuilder buildInsertPenalty(String insert) {
             this.insertPenalty = (short) Integer.parseInt(insert);
             return this;
