@@ -43,7 +43,7 @@ public class DnaProcessor {
             } else {
                 matrix = new SubstitutionMatrix((FiniteAlphabet) AlphabetManager.alphabetForName("DNA"), costMatrix, "macierz kosztu");
             }
-            
+
             if (global) {
                 NeedlemanWunsch aligner = new NeedlemanWunsch(matchPenalty, replacePenalty,
                         insertPenalty, deletePenalty, gapExtendPenalty, matrix);
@@ -57,7 +57,7 @@ public class DnaProcessor {
 
                 AlignmentPair ap2 = aligner2.pairwiseAlignment(query, target);
 
-                response += "\n Local alignment with SmithWaterman:\n" + ap2.formatOutput();
+                response += "\n\n Local alignment with SmithWaterman:\n" + ap2.formatOutput();
             }
             return response;
         } catch (IllegalSymbolException e) {
