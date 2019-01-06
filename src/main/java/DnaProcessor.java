@@ -45,19 +45,24 @@ public class DnaProcessor {
             }
 
             if (global) {
+                long time = System.currentTimeMillis();
                 NeedlemanWunsch aligner = new NeedlemanWunsch(matchPenalty, replacePenalty,
                         insertPenalty, deletePenalty, gapExtendPenalty, matrix);
                 AlignmentPair ap = aligner.pairwiseAlignment(query, target);
-
-                response += "Global alignment with Needleman-Wunsch:\n" + ap.formatOutput() + "\n Edit distance " + aligner.getEditDistance();
+                time = System.currentTimeMillis() - time;
+                response += "Time of global aligment processing  = " + time + "\n";
+                //response += "Global alignment with Needleman-Wunsch:\n" + ap.formatOutput() + "\n Edit distance " + aligner.getEditDistance();
+                response += "Global alignment with Needleman-Wunsch:\n" +" Edit distance " + aligner.getEditDistance();
             }
             if (local) {
+                long time = System.currentTimeMillis();
                 SmithWaterman aligner2 = new SmithWaterman(matchPenalty, replacePenalty,
                         insertPenalty, deletePenalty, gapExtendPenalty, matrix);
 
                 AlignmentPair ap2 = aligner2.pairwiseAlignment(query, target);
-
-                response += "\n\n Local alignment with SmithWaterman:\n" + ap2.formatOutput();
+                time = System.currentTimeMillis() - time;
+                response += "Time of local aligment processing  = " + time + "\n";
+                response += "\n\n Local alignment with SmithWaterman: edit distance \n" + ap2.getScore();
             }
             return response;
         } catch (IllegalSymbolException e) {

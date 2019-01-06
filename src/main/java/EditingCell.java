@@ -62,6 +62,17 @@ class EditingCell extends TableCell<NucleotidProperty, String> {
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.ENTER) {
                     commitEdit(textField.getText());
+                    NucleotidProperty nucleotidProperty = (NucleotidProperty) getTableRow().getItem();
+                    String s = getTableColumn().getText();
+                    if ("A".equals(s)) {
+                        nucleotidProperty.setCostToA(getString());
+                    } else if ("C".equals(s)) {
+                        nucleotidProperty.setCostToC(getString());
+                    } else if ("G".equals(s)) {
+                        nucleotidProperty.setCostToG(getString());
+                    } else if ("T".equals(s)) {
+                        nucleotidProperty.setCostToT(getString());
+                    }
                 } else if (event.getCode() == KeyCode.ESCAPE) {
                     cancelEdit();
                 }
@@ -72,4 +83,5 @@ class EditingCell extends TableCell<NucleotidProperty, String> {
     private String getString() {
         return getItem() == null ? "" : getItem();
     }
+
 }
